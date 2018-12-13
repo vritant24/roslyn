@@ -158,11 +158,6 @@ class Program
 
             // verify working folder has set
             Assert.NotNull(VisualStudio.Workspace.GetWorkingFolder());
-
-            VisualStudio.SolutionExplorer.CloseSolution();
-
-            // verify working folder has not set
-            Assert.Null(VisualStudio.Workspace.GetWorkingFolder());
         }
     }
 }
