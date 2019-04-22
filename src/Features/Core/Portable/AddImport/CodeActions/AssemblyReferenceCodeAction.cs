@@ -43,20 +43,26 @@ namespace Microsoft.CodeAnalysis.AddImport
             internal override bool IsApplicable(Workspace workspace)
                 => !string.IsNullOrWhiteSpace(_lazyResolvedPath.Value);
 
-            protected override async Task<IEnumerable<CodeActionOperation>> ComputeOperationsAsync(CancellationToken cancellationToken)
+            protected override async Task<Solution> GetChangedSolutionAsync(CancellationToken cancellationToken)
             {
                 var service = OriginalDocument.Project.Solution.Workspace.Services.GetService<IMetadataService>();
                 var resolvedPath = _lazyResolvedPath.Value;
                 var reference = service.GetReference(resolvedPath, MetadataReferenceProperties.Assembly);
 
-                var newDocument = await GetUpdatedDocumentAsync(cancellationToken).ConfigureAwait(false);
+                var newDocument = await GetUpdatedDocumentAsync(cancellationToken).ConfigureAwait(true);
 
                 // Now add the actual assembly reference.
                 var newProject = newDocument.Project;
                 newProject = newProject.WithMetadataReferences(
                     newProject.MetadataReferences.Concat(reference));
 
-                var operation = new ApplyChangesOperation(newProject.Solution);
+                return newProject.Solution;
+            }
+
+            protected override async Task<IEnumerable<CodeActionOperation>> ComputeOperationsAsync(CancellationToken cancellationToken)
+            {
+                var solution = await GetChangedSolutionAsync(cancellationToken).ConfigureAwait(false);
+                var operation = new ApplyChangesOperation(solution);
                 return SpecializedCollections.SingletonEnumerable<CodeActionOperation>(operation);
             }
         }
