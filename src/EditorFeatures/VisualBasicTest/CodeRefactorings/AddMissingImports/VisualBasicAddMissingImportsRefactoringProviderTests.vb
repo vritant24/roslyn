@@ -9,7 +9,6 @@ Imports Microsoft.CodeAnalysis.PasteTracking
 Namespace Microsoft.CodeAnalysis.AddMissingImports
 
     <UseExportProvider>
-    <Trait(Traits.Feature, Traits.Features.AddMissingImports)>
     Public Class VisualBasicAddMissingImportsRefactoringProviderTests
         Inherits AbstractVisualBasicCodeActionTest
 
@@ -50,6 +49,7 @@ Namespace Microsoft.CodeAnalysis.AddMissingImports
         End Function
 
         <WpfFact>
+        <Trait(Traits.Feature, Traits.Features.AddMissingImports)>
         Public Async Function AddMissingImports_NoAction_PasteIsNotMissingImports() As Task
             Dim code = "
 Class [|C|]
@@ -66,6 +66,7 @@ End Namespace
         End Function
 
         <WpfFact>
+        <Trait(Traits.Feature, Traits.Features.AddMissingImports)>
         Public Async Function AddMissingImports_AddImport_PasteContainsSingleMissingImport() As Task
             Dim code = "
 Class C
@@ -95,6 +96,7 @@ End Namespace
         End Function
 
         <WpfFact>
+        <Trait(Traits.Feature, Traits.Features.AddMissingImports)>
         Public Async Function AddMissingImports_AddImportsBelowSystem_PlaceSystemFirstPasteContainsMultipleMissingImports() As Task
             Dim code = "
 Imports System
@@ -140,6 +142,7 @@ End Namespace
         End Function
 
         <WpfFact>
+        <Trait(Traits.Feature, Traits.Features.AddMissingImports)>
         Public Async Function AddMissingImports_AddImportsAboveSystem_DontPlaceSystemFirstPasteContainsMultipleMissingImports() As Task
             Dim code = "
 Imports System
@@ -185,6 +188,7 @@ End Namespace
         End Function
 
         <WpfFact>
+        <Trait(Traits.Feature, Traits.Features.AddMissingImports)>
         Public Async Function AddMissingImports_AddImportsUngrouped_SeparateImportGroupsPasteContainsMultipleMissingImports() As Task '
             ' The current fixes for AddImport diagnostics do not consider whether imports should be grouped.
             ' This test documents this behavior and is a reminder that when the behavior changes 
@@ -234,6 +238,7 @@ End Namespace
         End Function
 
         <WpfFact>
+        <Trait(Traits.Feature, Traits.Features.AddMissingImports)>
         Public Async Function AddMissingImports_NoAction_NoPastedSpan() As Task
             Dim code = "
 Class C
@@ -250,6 +255,7 @@ End Namespace
         End Function
 
         <WpfFact>
+        <Trait(Traits.Feature, Traits.Features.AddMissingImports)>
         Public Async Function AddMissingImports_NoAction_PasteContainsAmibiguousMissingImport() As Task
             Dim code = "
 Class C
@@ -271,6 +277,7 @@ End Namespace
         End Function
 
         <WpfFact>
+        <Trait(Traits.Feature, Traits.Features.AddMissingImports)>
         Public Async Function AddMissingImports_PartialFix_PasteContainsFixableAndAmbiguousMissingImports() As Task
             Dim code = "
 Imports System
@@ -322,6 +329,7 @@ End Namespace
 
         <WorkItem(31768, "https://github.com/dotnet/roslyn/issues/31768")>
         <WpfFact>
+        <Trait(Traits.Feature, Traits.Features.AddMissingImports)>
         Public Async Function AddMissingImports_AddMultipleImports_NoPreviousImports() As Task
             Dim code = "
 Class C

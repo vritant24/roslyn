@@ -27,30 +27,13 @@ using Xunit;
 namespace Microsoft.CodeAnalysis.AddMissingImports
 {
     [UseExportProvider]
-    [Trait(Traits.Feature, Traits.Features.AddMissingImports)]
     public class CSharpAddMissingImportsRefactoringProviderTests : AbstractCSharpCodeActionTest
     {
-        private static ExportProvider s_exportProvider = null;
-
         // Add a SymbolSearchService that will find the "Point" class in "System.Drawing" used to test
         // adding reference assemblies
         private static readonly ComposableCatalog AddMissingImportsTestCatalog = TestExportProvider.EntireAssemblyCatalogWithCSharpAndVisualBasic
                 .WithoutPartsOfType(typeof(ISymbolSearchService)).WithPart(typeof(TestSymbolSearchService))
                 .WithoutPartsOfType(typeof(MetadataServiceFactory)).WithPart(typeof(TestMetadataService));
-
-        private static ExportProvider AddMissingImportsExportProvider
-        {
-            get
-            {
-                if (s_exportProvider is null)
-                {
-                    s_exportProvider = ExportProviderCache.GetOrCreateExportProviderFactory(
-                        AddMissingImportsTestCatalog).CreateExportProvider();
-                }
-
-                return s_exportProvider;
-            }
-        }
 
         protected override CodeRefactoringProvider CreateCodeRefactoringProvider(Workspace workspace, TestParameters parameters)
         {
@@ -61,7 +44,9 @@ namespace Microsoft.CodeAnalysis.AddMissingImports
 
         protected override TestWorkspace CreateWorkspaceFromFile(string initialMarkup, TestParameters parameters)
         {
-            var workspace = TestWorkspace.CreateCSharp(initialMarkup, exportProvider: AddMissingImportsExportProvider);
+            var exportProvider = ExportProviderCache.GetOrCreateExportProviderFactory(AddMissingImportsTestCatalog)
+                .CreateExportProvider();
+            var workspace = TestWorkspace.CreateCSharp(initialMarkup, exportProvider: exportProvider);
 
             // Treat the span being tested as the pasted span
             var hostDocument = workspace.Documents.First();
@@ -91,6 +76,7 @@ namespace Microsoft.CodeAnalysis.AddMissingImports
         }
 
         [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.AddMissingImports)]
         public async Task AddMissingImports_AddImport_CanAddReferenceAssembly()
         {
             var code = @"
@@ -119,6 +105,7 @@ class C
         }
 
         [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.AddMissingImports)]
         public async Task AddMissingImports_AddImport_PasteContainsSingleMissingImport()
         {
             var code = @"
@@ -151,6 +138,7 @@ namespace A
         }
 
         [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.AddMissingImports)]
         public async Task AddMissingImports_AddImportsBelowSystem_PlaceSystemFirstPasteContainsMultipleMissingImports()
         {
             var code = @"
@@ -199,6 +187,7 @@ namespace B
         }
 
         [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.AddMissingImports)]
         public async Task AddMissingImports_AddImportsAboveSystem_DontPlaceSystemFirstPasteContainsMultipleMissingImports()
         {
             var code = @"
@@ -247,6 +236,7 @@ namespace B
         }
 
         [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.AddMissingImports)]
         public async Task AddMissingImports_AddImportsUngrouped_SeparateImportGroupsPasteContainsMultipleMissingImports()
         {
             // The current fixes for AddImport diagnostics do not consider whether imports should be grouped.
@@ -299,6 +289,7 @@ namespace B
         }
 
         [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.AddMissingImports)]
         public async Task AddMissingImports_PartialFix_PasteContainsFixableAndAmbiguousMissingImports()
         {
             var code = @"
@@ -345,6 +336,7 @@ namespace B
         }
 
         [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.AddMissingImports)]
         public async Task AddMissingImports_NoAction_NoPastedSpan()
         {
             var code = @"
@@ -363,6 +355,7 @@ namespace A
         }
 
         [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.AddMissingImports)]
         public async Task AddMissingImports_NoAction_PasteIsNotMissingImports()
         {
             var code = @"
@@ -381,6 +374,7 @@ namespace A
         }
 
         [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.AddMissingImports)]
         public async Task AddMissingImports_NoAction_PasteContainsAmibiguousMissingImport()
         {
             var code = @"
@@ -405,6 +399,7 @@ namespace B
 
         [WorkItem(31768, "https://github.com/dotnet/roslyn/issues/31768")]
         [WpfFact]
+        [Trait(Traits.Feature, Traits.Features.AddMissingImports)]
         public async Task AddMissingImports_AddMultipleImports_NoPreviousImports()
         {
             var code = @"
