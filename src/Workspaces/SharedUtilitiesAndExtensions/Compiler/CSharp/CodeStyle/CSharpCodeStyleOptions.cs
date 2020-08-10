@@ -308,6 +308,13 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeStyle
                 defaultValue: new CodeStyleOption2<UnusedValuePreference>(UnusedValuePreference.DiscardVariable, NotificationOption2.Suggestion),
                 s_allOptionsBuilder);
 
+        public static readonly Option2<CodeStyleOption2<bool>> PreferNamespaceMatchFolderStructure = CreateOption(
+            CSharpCodeStyleOptionGroups.ExpressionLevelPreferences, nameof(PreferNamespaceMatchFolderStructure),
+            defaultValue: s_trueWithSuggestionEnforcement,
+            storageLocations: new OptionStorageLocation2[] {
+                EditorConfigStorageLocation.ForBoolCodeStyleOption("csharp_namespace_match_folder_structure_preference"),
+                new RoamingProfileStorageLocation($"TextEditor.CSharp.Specific.{nameof(PreferNamespaceMatchFolderStructure)}")});
+
         static CSharpCodeStyleOptions()
         {
             // Note that the static constructor executes after all the static field initializers for the options have executed,
