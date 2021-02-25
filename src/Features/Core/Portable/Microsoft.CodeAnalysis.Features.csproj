@@ -7,7 +7,7 @@
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <ApplyNgenOptimization>partial</ApplyNgenOptimization>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    
+
     <!-- NuGet -->
     <IsPackable>true</IsPackable>
     <PackageDescription>
@@ -99,6 +99,7 @@
     <RestrictedInternalsVisibleTo Include="Microsoft.VisualStudio.IntelliCode.CSharp" Partner="Pythia" Key="$(IntelliCodeKey)" />
     <RestrictedInternalsVisibleTo Include="Microsoft.VisualStudio.IntelliCode.CSharp.Extraction" Partner="Pythia" Key="$(IntelliCodeKey)" />
     <InternalsVisibleTo Include="IdeCoreBenchmarks" />
+    <InternalsVisibleTo Include="dotnet-watch" Key="$(AspNetCoreKey)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\CodeStyle\Core\Analyzers\FormattingAnalyzerHelper.cs" Link="Formatting\FormattingAnalyzerHelper.cs" />
